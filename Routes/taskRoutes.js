@@ -12,16 +12,27 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Get a single task by ID
+// Get all tasks
 router.get('/:id', async (req, res) => {
     try {
-        const task = await Task.findById(req.params.id).populate('listId', 'title');
-        if (!task) return res.status(404).json({ message: 'Task not found' });
-        res.json(task);
+        const tasks = await Task.find({ listId: req.params.id }).populate('listId', 'title');
+        
+        res.json(tasks);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
+
+// Get a single task by ID
+// router.get('/:id', async (req, res) => {
+//     try {
+//         const task = await Task.findById(req.params.id).populate('listId', 'title');
+//         if (!task) return res.status(404).json({ message: 'Task not found' });
+//         res.json(task);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
 
 // Create a new task
 router.post('/', async (req, res) => {

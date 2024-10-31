@@ -1,6 +1,6 @@
-// server.js
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors'); // Add this line
 require('dotenv').config();
 
 const taskRoutes = require('./Routes/taskRoutes');
@@ -8,6 +8,8 @@ const listRoutes = require('./Routes/listRoutes'); // Assuming you also have lis
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+app.use(cors({ origin: "http://localhost:3000" })); // Use cors
 
 app.use(express.json());
 
