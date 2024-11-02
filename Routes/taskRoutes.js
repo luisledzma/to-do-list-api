@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Task = require('../Models/Task');
+const List = require('../Models/List');
 
 // Get all tasks
 router.get('/', async (req, res) => {
@@ -13,11 +14,28 @@ router.get('/', async (req, res) => {
 });
 
 // Get all tasks
+// Get tasks by list ID and structure the response
 router.get('/:id', async (req, res) => {
     try {
-        const tasks = await Task.find({ listId: req.params.id }).populate('listId', 'title');
-        
-        res.json(tasks);
+        // Find the list by its ID
+        const list = await List.findById(req.params.id).select('_id title icon');
+        if (!list) {
+            return res.status(404).json({ message: 'List not found' });
+        }
+
+        // Find tasks associated with this list ID
+        const tasks = await Task.find({ listId: req.params.id }).select('-listId'); // Exclude listId from each task
+
+        // Structure the response with tasks nested inside the list object
+        const response = {
+            listId: list._id,
+            title: list.title,
+            icon: list.icon,
+            tasks: tasks
+            
+        };
+
+        res.json(response);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
