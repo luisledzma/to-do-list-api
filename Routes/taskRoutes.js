@@ -54,8 +54,8 @@ router.get('/:id', async (req, res) => {
 
 // Create a new task
 router.post('/', async (req, res) => {
-    const { title, description, listId, completed } = req.body;
-    const task = new Task({ title, description, listId, completed });
+    const { title, description, listId, completed, dueDate } = req.body;
+    const task = new Task({ title, description, listId, completed,dueDate });
     try {
         const savedTask = await task.save();
         res.status(201).json(savedTask);
